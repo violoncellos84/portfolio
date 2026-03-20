@@ -494,6 +494,39 @@ var SAVED = {
 };
 
 /* ═══════════════════════════════════════════════════════
+   ADMIN AUTH
+   ─ PIN 변경: https://emn178.github.io/online-tools/sha256.html 에서
+     원하는 PIN 의 SHA-256 해시값으로 아래 문자열을 교체하세요.
+     기본 PIN: 1234  (반드시 변경 권장)
+   ═══════════════════════════════════════════════════════ */
+var ADMIN_PIN_HASH = '6db44caad5c968a5ec334024daa615d29998fa79f82797cc12141871d0ffbd7b';
+/* 허용 GitHub 계정 (raw URL 앞부분) */
+var ALLOWED_GITHUB_ORIGIN = 'https://raw.githubusercontent.com/violoncellos84/';
+
+function sha256(str) {
+  var encoder = new TextEncoder();
+  return crypto.subtle.digest('SHA-256', encoder.encode(str)).then(function(buf) {
+    return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+  });
+}
+function isAdminAuthed() {
+  return sessionStorage.getItem('_adminOk') === '1';
+}
+function requireAdmin(callback) {
+  if (isAdminAuthed()) { callback(); return; }
+  var pin = prompt('관리자 PIN을 입력하세요:');
+  if (!pin) return;
+  sha256(pin).then(function(hash) {
+    if (hash === ADMIN_PIN_HASH) {
+      sessionStorage.setItem('_adminOk', '1');
+      callback();
+    } else {
+      alert('PIN이 올바르지 않습니다.');
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
    BUILD DETAIL PANELS (동적 생성)
    ═══════════════════════════════════════════════════════ */
 function buildDetailPanels() {
@@ -591,8 +624,14 @@ function buildDetailPanels() {
 /* ─ 매니저 토글 ─ */
 function toggleMgr(proj) {
   var mgr = document.getElementById('mgr-'+proj);
-  mgr.classList.toggle('open');
-  if (mgr.classList.contains('open')) renderImgList(proj);
+  if (mgr.classList.contains('open')) {
+    mgr.classList.remove('open');
+    return;
+  }
+  requireAdmin(function() {
+    mgr.classList.add('open');
+    renderImgList(proj);
+  });
 }
 
 /* ─ 적용 & 닫기 ─ */
@@ -610,6 +649,10 @@ function addFromUrl(proj) {
   var input = document.getElementById('urlinput-'+proj);
   var url = input.value.trim();
   if (!url) return;
+  if (url.indexOf(ALLOWED_GITHUB_ORIGIN) !== 0) {
+    alert('허용되지 않은 URL입니다.\n반드시 아래 주소로 시작해야 합니다:\n' + ALLOWED_GITHUB_ORIGIN);
+    return;
+  }
   var isKvCheck = document.getElementById('kvcheck-'+proj);
   var asKey = isKvCheck && isKvCheck.checked && IMAGE_STORE[proj].length > 0;
   var item = { url: url, type: 'github', name: url.split('/').pop() };
