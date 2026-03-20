@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARTIST — Game Concept Art Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── VARIABLES ───────────────────────────────── */
+:root {
+  --bg:       #08090d;
+  --bg2:      #0c0e15;
+  --surface:  #13151f;
+  --surface2: #181b28;
+  --border:        rgba(255,255,255,.06);
+  --border-hover:  rgba(255,255,255,.14);
+  --accent:        #5b8fcc;
+  --accent-dim:    rgba(91,143,204,.12);
+  --accent-glow:   rgba(91,143,204,.25);
+  --text:          #e8edf5;
+  --text-2:        rgba(232,237,245,.5);
+  --text-3:        rgba(232,237,245,.28);
+}
+
+/* ── RESET ───────────────────────────────────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:'DM Sans','Noto Sans KR',sans-serif; font-weight:300;
+  overflow-x:hidden; -webkit-font-smoothing:antialiased;
+  cursor:none;
+}
+
+/* ── CUSTOM CURSOR ───────────────────────────── */
+#c-dot,#c-ring{
+  position:fixed; pointer-events:none; z-index:9999;
+  transform:translate(-50%,-50%); top:-100px; left:-100px;
+}
+#c-dot{
+  width:8px; height:8px;
+  background:var(--accent); border-radius:50%;
+}
+#c-ring{
+  width:36px; height:36px;
+  border:1px solid var(--accent-glow); border-radius:50%;
+  transition:width .3s ease, height .3s ease, border-color .3s ease;
+}
+body:has(a:hover) #c-ring,
+body:has(button:hover) #c-ring{
+  width:52px; height:52px; border-color:var(--accent-glow);
+}
+@media(max-width:900px){ body{cursor:auto} #c-dot,#c-ring{display:none} }
+
+/* ── SCROLL BAR ──────────────────────────────── */
+#prog{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:999;width:0;transition:width .05s}
+
+/* ── NAV ─────────────────────────────────────── */
+nav{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:0 56px; height:68px;
+  border-bottom:1px solid transparent;
+  transition:background .4s,backdrop-filter .4s,border-color .4s;
+}
+nav.scrolled{background:rgba(8,9,13,.92);backdrop-filter:blur(20px);border-color:var(--border)}
+.nav-logo{font-size:13px;font-weight:500;letter-spacing:4px;text-transform:uppercase;color:var(--text);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{font-size:11px;font-weight:400;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-2);text-decoration:none;transition:color .25s}
+.nav-links a:hover{color:var(--text)}
+
+/* ── HERO ────────────────────────────────────── */
+.hero{position:relative;height:100vh;min-height:600px;display:flex;align-items:flex-end;overflow:hidden}
+
+/* ★ 히어로 배경: .hero-bg style 속성에 background-image:url('파일명.jpg') 추가 */
+.hero-bg{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(to bottom, rgba(8,9,13,.1) 0%, rgba(8,9,13,.04) 35%, rgba(8,9,13,.65) 70%, rgba(8,9,13,.98) 100%),
+    linear-gradient(115deg, #080e22 0%, #0a1530 40%, #0e0820 75%, #08090d 100%);
+  background-size:cover; background-position:center;
+}
+.hero-atm{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 50% 55% at 65% 38%, rgba(40,90,200,.09) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 35% at 18% 72%, rgba(80,40,160,.06) 0%, transparent 60%);
+  animation:atmPulse 14s ease-in-out infinite alternate;
+}
+@keyframes atmPulse{0%{opacity:.5}100%{opacity:1}}
+
+.hero-content{
+  position:relative; z-index:2; width:100%;
+  padding:0 64px 72px;
+  display:grid; grid-template-columns:1fr auto; align-items:flex-end; gap:48px;
+}
+.hero-eyebrow{
+  display:inline-flex; align-items:center; gap:10px;
+  font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--accent);
+  margin-bottom:20px; opacity:0; animation:fadeUp .7s .15s ease forwards;
+}
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--accent)}
+h1{
+  font-family:'Playfair Display',serif; font-weight:400;
+  font-size:clamp(50px,6.5vw,94px); line-height:1.0; letter-spacing:-.5px;
+  margin-bottom:24px; opacity:0; animation:fadeUp .7s .3s ease forwards;
+}
+h1 em{font-style:italic;color:var(--accent);display:block}
+.hero-desc{
+  font-size:14px; line-height:1.9; color:var(--text-2); max-width:420px; margin-bottom:40px;
+  opacity:0; animation:fadeUp .7s .45s ease forwards;
+}
+.hero-cta{display:flex;gap:12px;opacity:0;animation:fadeUp .7s .6s ease forwards}
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:500; letter-spacing:2px; text-transform:uppercase;
+  text-decoration:none; padding:13px 28px; border:none; cursor:pointer;
+  transition:all .25s; white-space:nowrap;
+}
+.btn-fill{background:var(--accent);color:#06080f}
+.btn-fill:hover{background:#7aaee0;transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--text-2);border:1px solid var(--border-hover)}
+.btn-outline:hover{color:var(--text);border-color:rgba(255,255,255,.3)}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:36px;opacity:0;animation:fadeIn .7s .8s ease forwards}
+.hero-stats{display:flex;flex-direction:column;gap:24px;text-align:right}
+.hstat-n{font-family:'Playfair Display',serif;font-size:38px;font-weight:400;line-height:1}
+.hstat-l{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-3);margin-top:3px}
+.scroll-hint{display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-line{width:1px;height:52px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollPulse 2s ease infinite}
+.scroll-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-3);writing-mode:vertical-rl}
+
+/* ── SECTION COMMON ──────────────────────────── */
+section{padding:112px 64px}
+.eyebrow{
+  font-size:9px; font-weight:500; letter-spacing:4.5px; text-transform:uppercase;
+  color:var(--accent); margin-bottom:14px;
+  display:flex; align-items:center; gap:14px;
+}
+.eyebrow::after{content:'';width:40px;height:1px;background:var(--accent);opacity:.5}
+.sec-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(32px,4vw,56px); font-weight:400; line-height:1.12; margin-bottom:56px;
+}
+.sec-title em{font-style:italic;color:var(--accent)}
+
+/* ── ABOUT ───────────────────────────────────── */
+.about{background:var(--bg2);border-top:1px solid var(--border)}
+.about-grid{display:grid;grid-template-columns:1fr 400px;gap:96px;align-items:start}
+.about-body p{font-size:15px;line-height:1.9;color:var(--text-2);margin-bottom:22px}
+.stats-row{display:flex;border:1px solid var(--border);margin-top:48px}
+.stat-cell{flex:1;padding:28px 20px;border-right:1px solid var(--border);transition:background .3s}
+.stat-cell:last-child{border-right:none}
+.stat-cell:hover{background:var(--accent-dim)}
+.stat-n{font-family:'Playfair Display',serif;font-size:38px;font-weight:400;color:var(--accent);line-height:1}
+.stat-l{font-size:10px;letter-spacing:1.5px;color:var(--text-3);margin-top:6px;text-transform:uppercase}
+.profile-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;position:sticky;top:88px}
+/* ★ 프로필 사진: .profile-photo style에 background-image:url('사진.jpg') 추가 */
+.profile-photo{
+  width:100%; aspect-ratio:3/4;
+  background:linear-gradient(135deg,#101828 0%,#0c1438 50%,#101428 100%);
+  background-size:cover; background-position:center top;
+  display:flex; align-items:center; justify-content:center;
+}
+.profile-ph{text-align:center;padding:20px}
+.profile-ph svg{width:40px;height:40px;stroke:rgba(91,143,204,.3);fill:none;display:block;margin:0 auto 10px}
+.profile-ph p{font-size:11px;letter-spacing:1px;color:var(--text-3)}
+.profile-info{padding:22px 24px}
+.profile-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;margin-bottom:4px}
+.profile-role{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+
+/* ── GALLERY ─────────────────────────────────── */
+.gal-header{margin-bottom:40px}
+.gal-header .sec-title{margin-bottom:20px}
+
+.proj-filter{display:flex;gap:2px;flex-wrap:wrap}
+.pf-btn{
+  padding:7px 18px; font-family:'DM Sans',sans-serif;
+  font-size:10px; font-weight:500; letter-spacing:2px; text-transform:uppercase;
+  background:transparent; color:var(--text-3); border:1px solid var(--border);
+  cursor:pointer; transition:all .22s;
+}
+.pf-btn:hover{color:var(--text);border-color:var(--border-hover)}
+.pf-btn.active{background:var(--accent);color:#06080f;border-color:var(--accent)}
+
+/* 10-card project grid */
+.proj-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:3px;
+}
+.proj-card{
+  position:relative; overflow:hidden; cursor:pointer;
+  aspect-ratio:4/3;
+  background:var(--surface); border:1px solid var(--border);
+  transition:border-color .3s, transform .25s;
+}
+.proj-card:hover{border-color:var(--accent-glow);transform:translateY(-3px)}
+.proj-card.is-active{border-color:var(--accent);transform:translateY(-3px)}
+
+.pc-bg{
+  position:absolute; inset:0;
+  background-size:cover; background-position:center;
+  transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.proj-card:hover .pc-bg,.proj-card.is-active .pc-bg{transform:scale(1.05)}
+
+/* individual tonal placeholders */
+.proj-card:nth-child(1)  .pc-bg{background-image:linear-gradient(135deg,#0d1835,#0a0f28); background-size:cover; background-position:center}
+.proj-card:nth-child(2)  .pc-bg{background-image:linear-gradient(140deg,#181030,#100828); background-size:cover; background-position:center}
+.proj-card:nth-child(3)  .pc-bg{background-image:linear-gradient(130deg,#0c2030,#081828); background-size:cover; background-position:center}
+.proj-card:nth-child(4)  .pc-bg{background-image:linear-gradient(145deg,#0a1420,#101c30); background-size:cover; background-position:center}
+.proj-card:nth-child(5)  .pc-bg{background-image:linear-gradient(135deg,#141830,#0c1228); background-size:cover; background-position:center}
+.proj-card:nth-child(6)  .pc-bg{background-image:linear-gradient(150deg,#0c1a28,#0a1420); background-size:cover; background-position:center}
+.proj-card:nth-child(7)  .pc-bg{background-image:linear-gradient(140deg,#100e30,#0c0c28); background-size:cover; background-position:center}
+.proj-card:nth-child(8)  .pc-bg{background-image:linear-gradient(130deg,#0e1828,#0a1020); background-size:cover; background-position:center}
+.proj-card:nth-child(9)  .pc-bg{background-image:linear-gradient(145deg,#101430,#0c1228); background-size:cover; background-position:center}
+.proj-card:nth-child(10) .pc-bg{background-image:linear-gradient(135deg,#0c1c30,#081428); background-size:cover; background-position:center}
+
+.pc-ov{
+  position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(8,9,13,.95) 0%,rgba(8,9,13,.35) 55%,transparent 100%);
+  display:flex; flex-direction:column; justify-content:flex-end; padding:16px 18px;
+}
+.pc-num{font-size:9px;letter-spacing:3px;color:var(--accent);opacity:.6;margin-bottom:5px}
+.pc-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:400;line-height:1.25;margin-bottom:5px}
+.pc-tag{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3)}
+.pc-arrow{
+  position:absolute; top:12px; right:12px;
+  width:26px; height:26px; border:1px solid var(--accent-glow);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--accent); font-size:12px;
+  opacity:0; transition:opacity .3s,transform .3s;
+}
+.proj-card:hover .pc-arrow,.proj-card.is-active .pc-arrow{opacity:1;transform:translate(2px,-2px)}
+
+/* Detail panel */
+.proj-detail{
+  display:none;
+  border:1px solid var(--border); border-top:2px solid var(--accent);
+  background:var(--bg2); padding:40px; margin-top:3px;
+}
+.proj-detail.is-open{display:block}
+
+.pd-header{
+  display:flex; justify-content:space-between; align-items:flex-start;
+  margin-bottom:28px; flex-wrap:wrap; gap:16px;
+}
+.pd-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:400}
+.pd-title em{font-style:italic;color:var(--accent)}
+.pd-close{
+  background:none; border:1px solid var(--border-hover); color:var(--text-2);
+  padding:6px 16px; font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  cursor:pointer; transition:all .2s;
+}
+.pd-close:hover{border-color:var(--accent);color:var(--accent)}
+
+.pd-meta{display:flex;gap:32px;margin-bottom:32px;flex-wrap:wrap}
+.pd-meta-item{display:flex;flex-direction:column;gap:4px}
+.pd-meta-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-3)}
+.pd-meta-val{font-size:13px;color:var(--text-2)}
+
+/* art slots grid inside detail */
+.art-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-auto-rows:120px;
+  gap:3px;
+}
+/* first slot is double-size key visual */
+.art-slot{
+  background:var(--surface); border:1px solid var(--border);
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+  cursor:pointer; transition:border-color .25s;
+}
+.art-slot:first-child{grid-column:span 2;grid-row:span 2}
+.art-slot:hover{border-color:var(--accent-glow)}
+.art-slot-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s ease}
+.art-slot:hover .art-slot-bg{transform:scale(1.05)}
+.art-slot svg{width:22px;height:22px;stroke:rgba(255,255,255,.08);fill:none;position:relative;z-index:1}
+.art-slot span{font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.12);text-transform:uppercase;position:relative;z-index:1}
+
+/* hint bar */
+.hint-bar{
+  margin-top:20px; padding:16px 22px;
+  background:var(--accent-dim); border:1px dashed rgba(91,143,204,.2);
+  display:flex; align-items:center; gap:14px;
+  font-size:12px; color:var(--text-2); line-height:1.7;
+}
+.hint-bar svg{width:18px;height:18px;stroke:var(--accent);fill:none;flex-shrink:0}
+
+/* ── SKILLS ──────────────────────────────────── */
+.skills{background:var(--bg2);border-top:1px solid var(--border)}
+.skill-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.skill-col{background:var(--surface);border:1px solid var(--border);padding:36px;transition:border-color .3s}
+.skill-col:hover{border-color:var(--border-hover)}
+.sk-num{font-size:10px;letter-spacing:3px;color:var(--accent);opacity:.5;margin-bottom:14px;font-weight:500}
+.sk-ttl{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;margin-bottom:28px}
+.sk-rows{display:flex;flex-direction:column;gap:16px}
+.sk-item{display:flex;flex-direction:column;gap:7px}
+.sk-top{display:flex;justify-content:space-between}
+.sk-name{font-size:12px;color:var(--text-2)}
+.sk-val{font-family:'Playfair Display',serif;font-size:13px;color:var(--accent);font-style:italic}
+.sk-track{height:1px;background:var(--border);position:relative;overflow:hidden}
+.sk-fill{position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--accent),rgba(91,143,204,.3));width:0;transition:width 1.1s cubic-bezier(.16,1,.3,1)}
+
+/* ── CONTACT ─────────────────────────────────── */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:88px;align-items:start}
+.contact-body p{font-size:15px;line-height:1.9;color:var(--text-2);margin-bottom:40px}
+.social-list{display:flex;flex-direction:column;gap:2px}
+.social-link{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:var(--surface);border:1px solid var(--border);text-decoration:none;transition:border-color .25s,background .25s}
+.social-link:hover{border-color:var(--border-hover);background:var(--surface2)}
+.social-name{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-2)}
+.social-arr{color:var(--accent);font-size:16px;transition:transform .2s}
+.social-link:hover .social-arr{transform:translateX(4px)}
+.form-wrap{display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-3)}
+.field input,.field textarea,.field select{
+  background:var(--surface);border:1px solid var(--border);color:var(--text);
+  font-family:'DM Sans','Noto Sans KR',sans-serif;font-size:13px;font-weight:300;
+  padding:12px 16px;outline:none;transition:border-color .25s;resize:none;appearance:none;
+}
+.field input:focus,.field textarea:focus{border-color:rgba(91,143,204,.4)}
+.field textarea{min-height:110px}
+.submit-btn{
+  align-self:flex-start;padding:13px 32px;background:transparent;
+  border:1px solid var(--border-hover);color:var(--text-2);
+  font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:3px;text-transform:uppercase;
+  cursor:pointer;transition:all .25s;
+}
+.submit-btn:hover{background:var(--accent);color:#06080f;border-color:var(--accent)}
+
+/* ── FOOTER ──────────────────────────────────── */
+footer{
+  padding:32px 64px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+}
+.f-logo{font-size:12px;font-weight:500;letter-spacing:4px;text-transform:uppercase;color:var(--text-3)}
+.f-logo span{color:var(--accent)}
+.f-copy{font-size:11px;color:var(--text-3);letter-spacing:.5px}
+
+/* ── ANIMATIONS ──────────────────────────────── */
+@keyframes fadeUp  {from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes fadeIn  {from{opacity:0}to{opacity:1}}
+@keyframes scrollPulse{0%,100%{opacity:.3}50%{opacity:1}}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ── RESPONSIVE ──────────────────────────────── */
+@media(max-width:1100px){
+  .proj-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:900px){
+  nav{padding:0 24px}
+  .nav-links{display:none}
+  section{padding:80px 24px}
+  .hero-content{padding:0 24px 56px;grid-template-columns:1fr}
+  .hero-right{display:none}
+  .about-grid,.contact-grid{grid-template-columns:1fr;gap:48px}
+  .skill-cols{grid-template-columns:1fr}
+  .proj-grid{grid-template-columns:repeat(2,1fr)}
+  .art-grid{grid-template-columns:repeat(2,1fr)}
+  .art-slot:first-child{grid-column:span 2;grid-row:span 1}
+  footer{padding:28px 24px;flex-direction:column;text-align:center}
+}
+@media(max-width:500px){
+  .proj-grid{grid-template-columns:1fr 1fr}
+  .pd-header{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div id="c-dot"></div>
+<div id="c-ring"></div>
+<div id="prog"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">ART<span>.</span>IST</a>
+  <ul class="nav-links">
+    <li><a href="#about">소개</a></li>
+    <li><a href="#gallery">작품</a></li>
+    <li><a href="#skills">스킬</a></li>
+    <li><a href="#contact">연락처</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <!-- ★ 배경 이미지 교체: style="background-image:url('파일명.jpg')" 추가 -->
+  <div class="hero-bg"></div>
+  <div class="hero-atm"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-eyebrow">Game Concept Artist</div>
+      <h1>Unseen<br>Worlds,<br><em>Brought to Life.</em></h1>
+      <p class="hero-desc">캐릭터의 혼, 세계의 분위기, 아이템의 이야기.<br>상상 속 세계를 시각 언어로 구현합니다.</p>
+      <div class="hero-cta">
+        <a href="#gallery" class="btn btn-fill">작품 보기</a>
+        <a href="#contact" class="btn btn-outline">연락하기</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stats">
+        <div><div class="hstat-n">5+</div><div class="hstat-l">Years</div></div>
+        <div><div class="hstat-n">10+</div><div class="hstat-l">Projects</div></div>
+      </div>
+      <div class="scroll-hint">
+        <div class="scroll-line"></div>
+        <span class="scroll-lbl">Scroll</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-grid">
+    <div>
+      <div class="eyebrow reveal">About</div>
+      <h2 class="sec-title reveal">빛과 어둠으로<br><em>세계를 그립니다</em></h2>
+      <div class="about-body reveal">
+        <p>안녕하세요. 게임 원화가 <strong style="color:var(--text);font-weight:400">[이름]</strong>입니다. 캐릭터의 내면을 외형으로 표현하고, 존재하지 않는 세계를 눈앞에 펼쳐놓는 작업을 합니다.</p>
+        <p>판타지 RPG부터 다크 판타지, SF까지 — 장르를 넘나들며 세계관에 몰입할 수 있는 비주얼을 만들어냅니다. 게임의 첫인상은 원화에서 시작된다고 믿습니다.</p>
+      </div>
+      <div class="stats-row reveal">
+        <div class="stat-cell"><div class="stat-n">5+</div><div class="stat-l">Experience</div></div>
+        <div class="stat-cell"><div class="stat-n">10+</div><div class="stat-l">Projects</div></div>
+        <div class="stat-cell"><div class="stat-n">3</div><div class="stat-l">Specialties</div></div>
+        <div class="stat-cell"><div class="stat-n">∞</div><div class="stat-l">Worlds</div></div>
+      </div>
+    </div>
+    <div class="profile-card reveal">
+      <!-- ★ 프로필 사진 교체: style="background-image:url('사진.jpg')" 추가 -->
+      <div class="profile-photo">
+        <div class="profile-ph">
+          <svg viewBox="0 0 24 24" stroke-width="1.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <p>프로필 사진<br>여기에 교체</p>
+        </div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name">[Your Name]</div>
+        <div class="profile-role">Game Concept Artist</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gal-header reveal">
+    <div class="eyebrow">Portfolio</div>
+    <h2 class="sec-title">Selected<br><em>Works</em></h2>
+    <div class="proj-filter">
+      <button class="pf-btn active" data-genre="all">All</button>
+      <button class="pf-btn" data-genre="rpg">RPG / Action</button>
+      <button class="pf-btn" data-genre="casual">Casual</button>
+      <button class="pf-btn" data-genre="puzzle">Puzzle</button>
+    </div>
+  </div>
+
+  <!-- 10 PROJECT CARDS -->
+  <div class="proj-grid reveal" id="projGrid">
+
+    <div class="proj-card" data-proj="howling-sword" data-genre="rpg">
+      <div class="pc-bg" style="background-image:url('01_joymaster/hs_01.png');background-size:cover;background-position:center"></div>
+      <div class="pc-ov">
+        <div class="pc-num">01</div>
+        <div class="pc-name">Howling Sword</div>
+        <div class="pc-tag">RPG · Character · Environment</div>
+      </div>
+      <div class="pc-arrow">↗</div>
+    </div>
+
+    <div class="proj-card" data-proj="boom-boom" data-genre="casual">
+      <div class="pc-bg" style="background-image:url('02_estgames/01_boom%20boom%20power/bbp_01.png');background-size:cover;background-position:center"></div>
+      <div class="pc-ov">
+        <div class="pc-num">02</div>
+        <div class="pc-name">Boom Boom Power</div>
+        <div class="pc-tag">Casual · Character · UI</div>
+      </div>
+      <div class="pc-arrow">↗</div>
+    </div>
+
+    <div class="proj-card" data-proj="crash-girls" data-genre="casual">
+      <div class="pc-bg" style="background-image:url('02_estgames/02_crash%20girls/cg_01.png');background-size:cover;background-position:center"></div>
+      <div class="pc-ov">
+        <div class="pc-num">03</div>
+        <div class="pc-name">Crash Girls</div>
+        <div class="pc-tag">Casual · Character</div>
+      </div>
+      <div class="pc-arrow">↗</div>
+    </div>
+
+    <div class="proj-card" data-proj="novawars" data-genre="rpg">
+      <div class="pc-bg" style="background-image:url('02_estgames/03_nova%20wars-commanders%20league/nwcl_01.png');background-size:cover;background-position:center"></div>
+      <div class="pc-ov">
+        <div class="pc-num">04</div>
+        <div class="pc-name">Novawars</div>
+        <div class="pc-tag">Commanders League · Strategy</div>
+      </div>
+      <div class="pc-arrow">↗</div>
+    </div>
+
+    <div class="proj-card" data-proj="catcafe2" data-genre="casual">
+      <div class="pc-bg" style="background-image:url('02_estgames/04_cat%20cafe%202/cc2_01.png');background-size:cover;background-position:center"></div>
+      <div class="pc-ov">
+        <div class="pc-num">05</div>
+        <div class="pc-name">Catcafe 2</div>
+        <div class="pc-tag">Casual · Character · Item</div>
+      </div>
+      <div class="pc-arrow">↗</div>
+    </div>
+
+    <div class="proj-card" data-proj="coin-blossom" data-genre="casual">
+      <div class="pc-bg" style="background-image:url('03_treenod/01_coin%20blossom/03_Illust%20%26%20bg/002.png');background-size:cover;background-position:center"></div>
+      <div class="pc-ov">
+        <div class="pc-num">06</div>
+        <div class="pc-name">Coin Blossom</div>
+        <div class="pc-tag">Casual · UI · Item</div>
+      </div>
+      <div class="pc-arrow">↗</div>
+    </div>
+
+    <div class="proj-card" data-proj="4x-project" data-genre="rpg">
+      <div class="pc-bg" style="background-image:url('03_treenod/02_4x%20project/02_concept/001.png');background-size:cover;background-position:center"></div>
+      <div class="pc-ov">
+        <div class="pc-num">07</div>
+        <div class="pc-name">4X Project</div>
+        <div class="pc-tag">Strategy · Environment · UI</div>
+      </div>
+      <div class="pc-arrow">↗</div>
+    </div>
+
+    <div class="proj-card" data-proj="cats-tale" data-genre="casual">
+      <div class="pc-bg" style="background-image:url('03_treenod/03_cats%20tale%28prototype%29/03_illust/001.jpg');background-size:cover;background-position:center"></div>
+      <div class="pc-ov">
+        <div class="pc-num">08</div>
+        <div class="pc-name">Cat's Tale</div>
+        <div class="pc-tag">Prototype · Character · Concept</div>
+      </div>
+      <div class="pc-arrow">↗</div>
+    </div>
+
+    <div class="proj-card" data-proj="match-catch" data-genre="puzzle">
+      <div class="pc-bg" style="background-image:url('03_treenod/03_match%20%26%20catch%203d/03_illust/01.png');background-size:cover;background-position:center"></div>
+      <div class="pc-ov">
+        <div class="pc-num">09</div>
+        <div class="pc-name">Match &amp; Catch 3D</div>
+        <div class="pc-tag">Puzzle · 3D · UI</div>
+      </div>
+      <div class="pc-arrow">↗</div>
+    </div>
+
+    <div class="proj-card" data-proj="match3" data-genre="puzzle">
+      <div class="pc-bg" style="background-image:url('03_treenod/04_match3%20puzzle/illust/BG.png');background-size:cover;background-position:center"></div>
+      <div class="pc-ov">
+        <div class="pc-num">10</div>
+        <div class="pc-name">Match3 Puzzle</div>
+        <div class="pc-tag">Puzzle · UI · Item</div>
+      </div>
+      <div class="pc-arrow">↗</div>
+    </div>
+
+  </div><!-- /proj-grid -->
+
+  <!-- DETAIL PANELS (inserted after grid, shown/hidden per project) -->
+
+  <div class="proj-detail" id="detail-howling-sword">
+    <div class="pd-header">
+      <div class="pd-title">Howling Sword <em>— Project 01</em></div>
+      <button class="pd-close" onclick="closeDetail('howling-sword')">닫기 ✕</button>
+    </div>
+    <div class="pd-meta">
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Genre</span><span class="pd-meta-val">RPG / Action</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Role</span><span class="pd-meta-val">Character · Environment · UI</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Status</span><span class="pd-meta-val">Released</span></div>
+    </div>
+    <div class="art-grid">
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('01_joymaster/hs_01.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg><span>Key Visual</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('01_joymaster/hs_02.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('01_joymaster/hs_03.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('01_joymaster/hs_04.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11H5z"/></svg><span>Environment</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('01_joymaster/hs_05.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11H5z"/></svg><span>Environment</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('01_joymaster/hs_06.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI / Item</span></div>
+    </div>
+  </div>
+
+  <div class="proj-detail" id="detail-boom-boom">
+    <div class="pd-header">
+      <div class="pd-title">Boom Boom Power <em>— Project 02</em></div>
+      <button class="pd-close" onclick="closeDetail('boom-boom')">닫기 ✕</button>
+    </div>
+    <div class="pd-meta">
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Genre</span><span class="pd-meta-val">Casual</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Role</span><span class="pd-meta-val">Character · UI</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Status</span><span class="pd-meta-val">Released</span></div>
+    </div>
+    <div class="art-grid">
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/01_boom%20boom%20power/bbp_01.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg><span>Key Visual</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/01_boom%20boom%20power/bbp_02.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/01_boom%20boom%20power/bbp_03.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/01_boom%20boom%20power/bbp_04.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/01_boom%20boom%20power/bbp_05.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/01_boom%20boom%20power/bbp_06.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+    </div>
+  </div>
+
+  <div class="proj-detail" id="detail-crash-girls">
+    <div class="pd-header">
+      <div class="pd-title">Crash Girls <em>— Project 03</em></div>
+      <button class="pd-close" onclick="closeDetail('crash-girls')">닫기 ✕</button>
+    </div>
+    <div class="pd-meta">
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Genre</span><span class="pd-meta-val">Casual</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Role</span><span class="pd-meta-val">Character Design</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Status</span><span class="pd-meta-val">Released</span></div>
+    </div>
+    <div class="art-grid">
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/02_crash%20girls/cg_01.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg><span>Key Visual</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/02_crash%20girls/cg_02.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/02_crash%20girls/cg_03.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/02_crash%20girls/cg_04.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/02_crash%20girls/cg_05.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/02_crash%20girls/cg_06.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+    </div>
+  </div>
+
+  <div class="proj-detail" id="detail-novawars">
+    <div class="pd-header">
+      <div class="pd-title">Novawars — Commanders League <em>— Project 04</em></div>
+      <button class="pd-close" onclick="closeDetail('novawars')">닫기 ✕</button>
+    </div>
+    <div class="pd-meta">
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Genre</span><span class="pd-meta-val">Strategy</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Role</span><span class="pd-meta-val">Character · Background · UI</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Status</span><span class="pd-meta-val">Released</span></div>
+    </div>
+    <div class="art-grid">
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/03_nova%20wars-commanders%20league/nwcl_01.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg><span>Key Visual</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/03_nova%20wars-commanders%20league/nwcl_02.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Commander</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/03_nova%20wars-commanders%20league/nwcl_03.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Commander</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/03_nova%20wars-commanders%20league/nwcl_04.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11H5z"/></svg><span>Background</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/03_nova%20wars-commanders%20league/nwcl_05.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/03_nova%20wars-commanders%20league/nwcl_06.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+    </div>
+  </div>
+
+  <div class="proj-detail" id="detail-catcafe2">
+    <div class="pd-header">
+      <div class="pd-title">Catcafe 2 <em>— Project 05</em></div>
+      <button class="pd-close" onclick="closeDetail('catcafe2')">닫기 ✕</button>
+    </div>
+    <div class="pd-meta">
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Genre</span><span class="pd-meta-val">Casual</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Role</span><span class="pd-meta-val">Character · Item</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Status</span><span class="pd-meta-val">Released</span></div>
+    </div>
+    <div class="art-grid">
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/04_cat%20cafe%202/cc2_01.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg><span>Key Visual</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/04_cat%20cafe%202/cc2_02.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/04_cat%20cafe%202/cc2_03.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/04_cat%20cafe%202/cc2_04.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/04_cat%20cafe%202/cc2_05.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('02_estgames/04_cat%20cafe%202/cc2_06.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+    </div>
+  </div>
+
+  <div class="proj-detail" id="detail-coin-blossom">
+    <div class="pd-header">
+      <div class="pd-title">Coin Blossom <em>— Project 06</em></div>
+      <button class="pd-close" onclick="closeDetail('coin-blossom')">닫기 ✕</button>
+    </div>
+    <div class="pd-meta">
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Genre</span><span class="pd-meta-val">Casual</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Role</span><span class="pd-meta-val">UI · Item</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Status</span><span class="pd-meta-val">Released</span></div>
+    </div>
+    <div class="art-grid">
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/01_coin%20blossom/03_Illust%20%26%20bg/002.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg><span>Key Visual</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/01_coin%20blossom/03_Illust%20%26%20bg/BG_Monkey.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/01_coin%20blossom/02_character/Hamster_01.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/01_coin%20blossom/02_character/Hamster_Action.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/01_coin%20blossom/04_icon%20%26%20prop/001.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/01_coin%20blossom/01_appicon/App_Icon_A%28512x512%29.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+    </div>
+  </div>
+
+  <div class="proj-detail" id="detail-4x-project">
+    <div class="pd-header">
+      <div class="pd-title">4X Project <em>— Project 07</em></div>
+      <button class="pd-close" onclick="closeDetail('4x-project')">닫기 ✕</button>
+    </div>
+    <div class="pd-meta">
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Genre</span><span class="pd-meta-val">Strategy (4X)</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Role</span><span class="pd-meta-val">Environment · UI</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Status</span><span class="pd-meta-val">In Development</span></div>
+    </div>
+    <div class="art-grid">
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/02_4x%20project/02_concept/001.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg><span>Key Visual</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/02_4x%20project/02_concept/01.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11H5z"/></svg><span>Environment</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/02_4x%20project/02_concept/Concept_02.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11H5z"/></svg><span>Environment</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/02_4x%20project/03_character/A_B.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/02_4x%20project/03_character/A_F.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/02_4x%20project/01_appicon/AppIcon_512x512.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+    </div>
+  </div>
+
+  <div class="proj-detail" id="detail-cats-tale">
+    <div class="pd-header">
+      <div class="pd-title">Cat's Tale <em>— Project 08 · Prototype</em></div>
+      <button class="pd-close" onclick="closeDetail('cats-tale')">닫기 ✕</button>
+    </div>
+    <div class="pd-meta">
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Genre</span><span class="pd-meta-val">Casual</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Role</span><span class="pd-meta-val">Character · Concept Art</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Status</span><span class="pd-meta-val">Prototype</span></div>
+    </div>
+    <div class="art-grid">
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_cats%20tale%28prototype%29/03_illust/001.jpg');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg><span>Key Visual</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_cats%20tale%28prototype%29/03_illust/002.jpg');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_cats%20tale%28prototype%29/03_illust/003.jpg');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Character</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_cats%20tale%28prototype%29/02_concept/000.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg><span>Concept</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_cats%20tale%28prototype%29/02_concept/001.jpg');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11H5z"/></svg><span>Environment</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_cats%20tale%28prototype%29/01_icon/003-copy.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI Concept</span></div>
+    </div>
+  </div>
+
+  <div class="proj-detail" id="detail-match-catch">
+    <div class="pd-header">
+      <div class="pd-title">Match &amp; Catch 3D <em>— Project 09</em></div>
+      <button class="pd-close" onclick="closeDetail('match-catch')">닫기 ✕</button>
+    </div>
+    <div class="pd-meta">
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Genre</span><span class="pd-meta-val">Puzzle</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Role</span><span class="pd-meta-val">3D · UI · Item</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Status</span><span class="pd-meta-val">Released</span></div>
+    </div>
+    <div class="art-grid">
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_match%20%26%20catch%203d/03_illust/01.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg><span>Key Visual</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_match%20%26%20catch%203d/03_illust/Emma%26Levy.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_match%20%26%20catch%203d/02_concept/001.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_match%20%26%20catch%203d/04_prop%20%26%20rsc/Ep_01.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_match%20%26%20catch%203d/04_prop%20%26%20rsc/Ep_02.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/03_match%20%26%20catch%203d/05_Blender/EX_002.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+    </div>
+  </div>
+
+  <div class="proj-detail" id="detail-match3">
+    <div class="pd-header">
+      <div class="pd-title">Match3 Puzzle <em>— Project 10</em></div>
+      <button class="pd-close" onclick="closeDetail('match3')">닫기 ✕</button>
+    </div>
+    <div class="pd-meta">
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Genre</span><span class="pd-meta-val">Puzzle</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Role</span><span class="pd-meta-val">UI · Item Design</span></div>
+      <div class="pd-meta-item"><span class="pd-meta-lbl">Status</span><span class="pd-meta-val">Released</span></div>
+    </div>
+    <div class="art-grid">
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/04_match3%20puzzle/illust/BG.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg><span>Key Visual</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/04_match3%20puzzle/illust/Chapter_1_Sequence_2.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/04_match3%20puzzle/gimmick/Gimmick001_01.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h4"/></svg><span>UI</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/04_match3%20puzzle/gimmick/Gimmick001_02.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/04_match3%20puzzle/item/Goods_Item_01_Icon.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+      <div class="art-slot"><div class="art-slot-bg" style="background-image:url('03_treenod/04_match3%20puzzle/block/001.png');background-size:cover;background-position:center"></div><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg><span>Item</span></div>
+    </div>
+  </div>
+
+  
+</section>
+
+<!-- SKILLS -->
+<section class="skills" id="skills">
+  <div class="eyebrow reveal">Skills</div>
+  <h2 class="sec-title reveal">Tools &amp;<br><em>Expertise</em></h2>
+  <div class="skill-cols reveal">
+    <div class="skill-col">
+      <div class="sk-num">01</div>
+      <div class="sk-ttl">소프트웨어</div>
+      <div class="sk-rows">
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">Photoshop</span><span class="sk-val">Expert</span></div><div class="sk-track"><div class="sk-fill" data-w="95"></div></div></div>
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">Clip Studio Paint</span><span class="sk-val">Expert</span></div><div class="sk-track"><div class="sk-fill" data-w="90"></div></div></div>
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">Procreate</span><span class="sk-val">Advanced</span></div><div class="sk-track"><div class="sk-fill" data-w="80"></div></div></div>
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">Blender (3D Ref)</span><span class="sk-val">Intermediate</span></div><div class="sk-track"><div class="sk-fill" data-w="60"></div></div></div>
+      </div>
+    </div>
+    <div class="skill-col">
+      <div class="sk-num">02</div>
+      <div class="sk-ttl">전문 분야</div>
+      <div class="sk-rows">
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">캐릭터 디자인</span><span class="sk-val">Expert</span></div><div class="sk-track"><div class="sk-fill" data-w="95"></div></div></div>
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">배경 / 환경</span><span class="sk-val">Advanced</span></div><div class="sk-track"><div class="sk-fill" data-w="85"></div></div></div>
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">UI / 아이템</span><span class="sk-val">Advanced</span></div><div class="sk-track"><div class="sk-fill" data-w="80"></div></div></div>
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">세계관 설계</span><span class="sk-val">Expert</span></div><div class="sk-track"><div class="sk-fill" data-w="90"></div></div></div>
+      </div>
+    </div>
+    <div class="skill-col">
+      <div class="sk-num">03</div>
+      <div class="sk-ttl">장르 경험</div>
+      <div class="sk-rows">
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">다크 판타지</span><span class="sk-val">★★★★★</span></div><div class="sk-track"><div class="sk-fill" data-w="98"></div></div></div>
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">하이 판타지</span><span class="sk-val">★★★★☆</span></div><div class="sk-track"><div class="sk-fill" data-w="80"></div></div></div>
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">SF / 사이버펑크</span><span class="sk-val">★★★★☆</span></div><div class="sk-track"><div class="sk-fill" data-w="75"></div></div></div>
+        <div class="sk-item"><div class="sk-top"><span class="sk-name">동양 판타지</span><span class="sk-val">★★★☆☆</span></div><div class="sk-track"><div class="sk-fill" data-w="65"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="contact-body">
+      <div class="eyebrow reveal">Contact</div>
+      <h2 class="sec-title reveal">함께<br><em>작업해요</em></h2>
+      <p class="reveal">새로운 세계를 함께 만들어 나갈 팀과 프로젝트를 기다립니다. 게임 개발, 일러스트 의뢰, 협업 제안 모두 환영합니다.</p>
+      <div class="social-list reveal">
+        <a href="mailto:your@email.com" class="social-link"><span class="social-name">✉ Email</span><span class="social-arr">→</span></a>
+        <a href="#" class="social-link"><span class="social-name">🎨 ArtStation</span><span class="social-arr">→</span></a>
+        <a href="#" class="social-link"><span class="social-name">📷 Instagram</span><span class="social-arr">→</span></a>
+        <a href="#" class="social-link"><span class="social-name">💼 LinkedIn</span><span class="social-arr">→</span></a>
+      </div>
+    </div>
+    <div class="form-wrap reveal">
+      <div class="field"><label>이름</label><input type="text" placeholder="Your Name"></div>
+      <div class="field"><label>이메일</label><input type="email" placeholder="your@email.com"></div>
+      <div class="field">
+        <label>프로젝트 유형</label>
+        <select>
+          <option value="" disabled selected>선택해주세요</option>
+          <option>게임 원화 의뢰</option>
+          <option>캐릭터 디자인</option>
+          <option>배경 / 환경</option>
+          <option>UI / 아이템</option>
+          <option>기타 협업</option>
+        </select>
+      </div>
+      <div class="field"><label>메시지</label><textarea placeholder="프로젝트에 대해 알려주세요..."></textarea></div>
+      <button class="submit-btn">메시지 보내기</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-logo">ART<span>.</span>IST</div>
+  <div class="f-copy">© 2026 — Game Concept Artist Portfolio. All rights reserved.</div>
+</footer>
+
+<script>
+// ── CURSOR ────────────────────────────────────────────────
+(function(){
+  var dot  = document.getElementById('c-dot');
+  var ring = document.getElementById('c-ring');
+  var mx=0, my=0, rx=0, ry=0;
+
+  document.addEventListener('mousemove', function(e){
+    mx = e.clientX; my = e.clientY;
+    dot.style.left  = mx + 'px';
+    dot.style.top   = my + 'px';
+  });
+
+  function tick(){
+    rx += (mx - rx) * 0.1;
+    ry += (my - ry) * 0.1;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+// ── SCROLL PROGRESS + NAV ────────────────────────────────
+var nav  = document.getElementById('mainNav');
+var prog = document.getElementById('prog');
+window.addEventListener('scroll', function(){
+  var s = window.scrollY;
+  nav.classList.toggle('scrolled', s > 60);
+  var pct = s / (document.body.scrollHeight - window.innerHeight) * 100;
+  prog.style.width = pct + '%';
+});
+
+// ── REVEAL ON SCROLL ─────────────────────────────────────
+var revealObs = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry, i){
+    if(entry.isIntersecting){
+      setTimeout(function(){ entry.target.classList.add('in'); }, i * 60);
+    }
+  });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(function(el){ revealObs.observe(el); });
+
+// ── SKILL BARS ───────────────────────────────────────────
+var skillObs = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      entry.target.querySelectorAll('.sk-fill').forEach(function(b){
+        b.style.width = b.dataset.w + '%';
+      });
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.skill-col').forEach(function(el){ skillObs.observe(el); });
+
+// ── GENRE FILTER ─────────────────────────────────────────
+document.querySelectorAll('.pf-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.pf-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var genre = btn.dataset.genre;
+    // close all open details
+    document.querySelectorAll('.proj-detail').forEach(function(d){ d.classList.remove('is-open'); });
+    document.querySelectorAll('.proj-card').forEach(function(c){ c.classList.remove('is-active'); });
+    // filter cards
+    document.querySelectorAll('.proj-card').forEach(function(card){
+      var match = genre === 'all' || card.dataset.genre === genre;
+      card.style.opacity       = match ? '1' : '0.12';
+      card.style.pointerEvents = match ? 'auto' : 'none';
+    });
+  });
+});
+
+// ── PROJECT CARD CLICK ───────────────────────────────────
+document.querySelectorAll('.proj-card').forEach(function(card){
+  card.addEventListener('click', function(){
+    var proj   = card.dataset.proj;
+    var detail = document.getElementById('detail-' + proj);
+    var isOpen = detail && detail.classList.contains('is-open');
+
+    // close all
+    document.querySelectorAll('.proj-detail').forEach(function(d){ d.classList.remove('is-open'); });
+    document.querySelectorAll('.proj-card').forEach(function(c){ c.classList.remove('is-active'); });
+
+    if(!isOpen && detail){
+      detail.classList.add('is-open');
+      card.classList.add('is-active');
+      setTimeout(function(){
+        detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 60);
+    }
+  });
+});
+
+// ── CLOSE DETAIL ─────────────────────────────────────────
+function closeDetail(proj){
+  var d = document.getElementById('detail-' + proj);
+  if(d) d.classList.remove('is-open');
+  document.querySelectorAll('.proj-card').forEach(function(c){ c.classList.remove('is-active'); });
+}
+</script>
+</body>
+</html>
