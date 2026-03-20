@@ -266,6 +266,7 @@ footer{padding:32px 64px;border-top:1px solid var(--border);display:flex;justify
 </nav>
 
 <section class="hero">
+  <!-- 헤더 배경: images/hero.jpg 파일을 추가하면 자동으로 표시됩니다 -->
   <div class="hero-bg" id="heroBg"></div>
   <div class="hero-atm"></div>
   <div class="hero-content">
@@ -305,6 +306,7 @@ footer{padding:32px 64px;border-top:1px solid var(--border);display:flex;justify
       </div>
     </div>
     <div class="profile-card reveal">
+      <!-- 프로필 사진: images/profile.jpg 파일을 추가하면 자동으로 표시됩니다 -->
       <div class="profile-photo" id="profilePhoto">
         <div class="profile-ph">
           <svg viewBox="0 0 24 24" stroke-width="1.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -794,16 +796,41 @@ function updateCardBadge(proj) {
 
 /* ─ SAVED 초기 로드 ─ */
 function loadSaved() {
-  if (SAVED.hero) {
-    document.getElementById('heroBg').style.backgroundImage =
-      'url('+SAVED.hero+'),linear-gradient(115deg,#080e22,#0a1530,#08090d)';
-  }
-  if (SAVED.profile) {
+  (function() {
+    var heroBg = document.getElementById('heroBg');
+    var heroPath = 'images/hero.jpg';
+    var img = new Image();
+    img.onload = function() {
+      heroBg.style.backgroundImage =
+        'url(' + heroPath + '),linear-gradient(115deg,#080e22,#0a1530,#08090d)';
+    };
+    img.onerror = function() {
+      if (SAVED.hero) {
+        heroBg.style.backgroundImage =
+          'url(' + SAVED.hero + '),linear-gradient(115deg,#080e22,#0a1530,#08090d)';
+      }
+      /* 둘 다 없으면 CSS 기본 그라디언트 유지 */
+    };
+    img.src = heroPath;
+  })();
+  (function() {
     var pp = document.getElementById('profilePhoto');
-    pp.style.backgroundImage = 'url('+SAVED.profile+')';
-    var ph = pp.querySelector('.profile-ph');
-    if (ph) ph.style.display = 'none';
-  }
+    var profilePath = 'images/profile.jpg';
+    var img = new Image();
+    img.onload = function() {
+      pp.style.backgroundImage = 'url(' + profilePath + ')';
+      var ph = pp.querySelector('.profile-ph');
+      if (ph) ph.style.display = 'none';
+    };
+    img.onerror = function() {
+      if (SAVED.profile) {
+        pp.style.backgroundImage = 'url(' + SAVED.profile + ')';
+        var ph = pp.querySelector('.profile-ph');
+        if (ph) ph.style.display = 'none';
+      }
+    };
+    img.src = profilePath;
+  })();
   PROJECTS.forEach(function(p) {
     var cu = SAVED.covers[p.id];
     if (cu) { var el = document.getElementById('cover-'+p.id); if (el) el.style.backgroundImage='url('+cu+')'; }
