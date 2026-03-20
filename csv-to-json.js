@@ -11,22 +11,38 @@ const path = require('path');
 const CSV_PATH  = path.join(__dirname, 'image_urls.csv');
 const JSON_PATH = path.join(__dirname, 'images.json');
 
-// CSV 파싱
-const lines = fs.readFileSync(CSV_PATH, 'utf8').split('\n');
-const headers = lines[0].split(',');
-const urlIdx  = headers.indexOf('Raw URL');
-const projIdx = headers.indexOf('프로젝트ID');
+// CSV 파싱 (구글 시트 내보내기 형식 대응)
+const raw   = fs.readFileSync(CSV_PATH, 'utf8').replace(/\r/g, '');
+const lines = raw.split('\n');
 
-if (urlIdx === -1 || projIdx === -1) {
-  console.error('CSV에서 "Raw URL" 또는 "프로젝트ID" 컬럼을 찾을 수 없습니다.');
+// 데이터 행(https:// 포함)에서 URL 컬럼과 프로젝트ID 컬럼 위치를 직접 감지
+let urlIdx = -1, projIdx = -1, dataStart = 0;
+
+for (let i = 0; i < lines.length; i++) {
+  const cols = lines[i].split(',');
+  const ui = cols.findIndex(c => c.trim().startsWith('https://'));
+  if (ui !== -1) {
+    urlIdx    = ui;
+    dataStart = i;
+    // 프로젝트ID는 마지막 비어있지 않은 컬럼, 또는 URL 뒤에 오는 비숫자 컬럼
+    // 일단 마지막 컬럼으로 설정, 이후 실제 값 있는 행에서 확인
+    projIdx = cols.length - 1;
+    break;
+  }
+}
+
+if (urlIdx === -1) {
+  console.error('CSV에서 URL 데이터를 찾을 수 없습니다.');
   process.exit(1);
 }
+
+console.log(`URL 컬럼: ${urlIdx}번째 (${String.fromCharCode(65+urlIdx)}열), 프로젝트ID 컬럼: ${projIdx}번째 (${String.fromCharCode(65+projIdx)}열), 데이터 시작: ${dataStart+1}행`);
 
 // 프로젝트ID별 URL 그룹화
 const grouped = {};
 let count = 0;
 
-for (let i = 1; i < lines.length; i++) {
+for (let i = dataStart; i < lines.length; i++) {
   const line = lines[i].trim();
   if (!line) continue;
 
