@@ -87,7 +87,7 @@ section{padding:112px 64px}
 .proj-card{position:relative;overflow:hidden;cursor:pointer;aspect-ratio:4/3;background:var(--surface);border:1px solid var(--border);transition:border-color .3s,transform .25s}
 .proj-card:hover{border-color:var(--accent-glow);transform:translateY(-3px)}
 .proj-card.is-active{border-color:var(--accent);transform:translateY(-3px)}
-.pc-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.pc-bg{position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat;transition:transform .5s cubic-bezier(.16,1,.3,1)}
 .proj-card:hover .pc-bg,.proj-card.is-active .pc-bg{transform:scale(1.05)}
 .proj-card:nth-child(1) .pc-bg{background:linear-gradient(135deg,#0d1835,#0a0f28)}
 .proj-card:nth-child(2) .pc-bg{background:linear-gradient(140deg,#181030,#100828)}
