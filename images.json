@@ -2,16 +2,16 @@
   "hero": "",
   "profile": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/profile-img.webp",
   "covers": {
-    "howling-sword": "",
-    "boom-boom": "",
-    "crash-girls": "",
-    "novawars": "",
-    "catcafe2": "",
-    "coin-blossom": "",
-    "4x-project": "",
-    "cats-tale": "",
-    "match-catch": "",
-    "match3": ""
+    "howling-sword": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/covers/howling-sword.webp",
+    "boom-boom": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/covers/boom-boom.webp",
+    "crash-girls": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/covers/crash-girls.webp",
+    "novawars": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/covers/novawars.webp",
+    "catcafe2": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/covers/catcafe2.webp",
+    "coin-blossom": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/covers/coin-blossom.webp",
+    "4x-project": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/covers/4x-project.webp",
+    "cats-tale": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/covers/cats-tale.webp",
+    "match-catch": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/covers/match-catch.webp",
+    "match3": "https://raw.githubusercontent.com/violoncellos84/portfolio/main/images/covers/match3.webp"
   },
   "artworks": {
     "howling-sword": [
